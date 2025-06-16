@@ -1,0 +1,24 @@
+# Dockerfile for custom Jitsi Web configuration
+# This can be used for additional customizations
+
+FROM jitsi/web:stable
+
+# Install additional tools if needed
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy custom configuration files
+COPY config/web/ /config/
+
+# Set custom environment variables
+ENV ENABLE_WELCOME_PAGE=1
+ENV ENABLE_PREJOINPAGE=1
+
+# Expose standard ports
+EXPOSE 80 443
+
+# Use the default entrypoint from base image
+ENTRYPOINT ["/init"]
