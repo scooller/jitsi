@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Jitsi Meet - Start Services",
+			"type": "shell",
+			"command": "docker-compose",
+			"args": [
+				"up",
+				"-d"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
