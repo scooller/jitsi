@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
     # Frontend
     web:
@@ -21,6 +19,7 @@ services:
             - ENABLE_HTTP_REDIRECT
             - ENABLE_HSTS
             - ENABLE_XMPP_WEBSOCKET
+            - ENABLE_NGINX
             - DISABLE_HTTPS
             - LETSENCRYPT_DOMAIN
             - LETSENCRYPT_EMAIL
@@ -102,17 +101,16 @@ services:
         networks:
             - meet.jitsi
         depends_on:
-            - prosody
-
-    # XMPP server
+            - prosody    # XMPP server
     prosody:
         image: jitsi/prosody:stable
         container_name: jitsi-prosody
         restart: unless-stopped
+        ports:
+            - '5280:5280'
         expose:
             - '5222'
             - '5347'
-            - '5280'
         volumes:
             - ${CONFIG}/prosody/config:/config:Z
             - ${CONFIG}/prosody/prosody-plugins-custom:/prosody-plugins-custom:Z
@@ -246,42 +244,12 @@ services:
             - COLIBRI_REST_ENABLED
             - SHUTDOWN_REST_ENABLED
             - TZ
-            - XMPP_AUTH_DOMAIN
-            - XMPP_INTERNAL_MUC_DOMAIN
+            - XMPP_AUTH_DOMAIN            - XMPP_INTERNAL_MUC_DOMAIN
             - XMPP_SERVER
         depends_on:
             - prosody
         networks:
-            - meet.jitsi    # Apache reverse proxy
-    apache:
-        image: httpd:2.4-alpine
-        container_name: jitsi-apache
-        restart: unless-stopped
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-            - ./apache/conf.d:/usr/local/apache2/conf/conf.d:ro
-            - ./ssl:/etc/ssl/certs:ro
-            - ./logs/apache:/usr/local/apache2/logs
-        depends_on:
-            - web
-        networks:
             - meet.jitsi
-
-    # Certbot for SSL certificates
-    certbot:
-        image: certbot/certbot
-        container_name: jitsi-certbot
-        volumes:
-            - ./ssl:/etc/letsencrypt
-            - ./ssl-challenge:/var/www/certbot        command: certonly --webroot --webroot-path=/var/www/certbot --email ${LETSENCRYPT_EMAIL} --agree-tos --no-eff-email --staging -d ${LETSENCRYPT_DOMAIN}
-        depends_on:
-            - apache
-        networks:
-            - meet.jitsi
-
     # Watchtower for automatic updates
     watchtower:
         image: containrrr/watchtower

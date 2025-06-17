@@ -94,27 +94,6 @@ install_docker_compose() {
     print_status "Docker Compose installed successfully"
 }
 
-# Function to configure firewall
-configure_firewall() {
-    print_status "Configuring firewall..."
-    
-    # Install firewalld if not installed
-    yum install -y firewalld
-    systemctl start firewalld
-    systemctl enable firewalld
-    
-    # Open required ports
-    firewall-cmd --permanent --zone=public --add-port=80/tcp
-    firewall-cmd --permanent --zone=public --add-port=443/tcp
-    firewall-cmd --permanent --zone=public --add-port=10000/udp
-    firewall-cmd --permanent --zone=public --add-port=4443/tcp
-    
-    # Reload firewall
-    firewall-cmd --reload
-    
-    print_status "Firewall configured successfully"
-}
-
 # Function to setup directories
 setup_directories() {
     print_status "Setting up directories..."

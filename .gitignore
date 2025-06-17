@@ -1,7 +1,8 @@
 # Jitsi Meet Docker - Ignore files
 # Created for production deployment
 
-# Environment files
+# Environment files with sensitive data
+.env
 .env.local
 .env.production
 .env.backup
@@ -23,7 +24,8 @@ backups/
 Thumbs.db
 
 # Editor files
-.vscode/
+.vscode/settings.json
+.vscode/launch.json
 .idea/
 *.swp
 *.swo
@@ -58,3 +60,26 @@ __pycache__/
 # Local configuration overrides
 docker-compose.override.yml
 docker-compose.local.yml
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
